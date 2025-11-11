@@ -1,3 +1,4 @@
+ccflags-y += -I$(src)
 ccflags-y += -Wno-int-conversion -Wno-int-to-pointer-cast
 obj-$(CONFIG_ANBOX_BINDER_IPC)	+= anbox-binder.o
 
