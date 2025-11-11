@@ -502,8 +502,6 @@ long compat_qcedev_ioctl(struct file *file,
 		ret = qcedev_ioctl(file, convert_cmd(cmd), (unsigned long)data);
 		err = compat_xfer_qcedev_map_buf_req(data32, data, false);
 		return ret ? ret : err;
-
-		break;
 	}
 	case COMPAT_QCEDEV_IOCTL_UNMAP_BUF_REQ: {
 		struct compat_qcedev_unmap_buf_req __user *data32;
@@ -522,13 +520,10 @@ long compat_qcedev_ioctl(struct file *file,
 		ret = qcedev_ioctl(file, convert_cmd(cmd), (unsigned long)data);
 		err = compat_xfer_qcedev_unmap_buf_req(data32, data, false);
 		return ret ? ret : err;
-
-		break;
 	}
 	default:
 		return -ENOIOCTLCMD;
 	}
-	return 0;
 }
 EXPORT_SYMBOL(compat_qcedev_ioctl);
 

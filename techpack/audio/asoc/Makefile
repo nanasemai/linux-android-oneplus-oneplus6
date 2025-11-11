@@ -1,5 +1,8 @@
 # MSM Machine Support
 
+# Add current directory to include path for config.h and other local headers
+ccflags-y += -I$(src)
+
 snd-soc-hostless-pcm-objs := msm-pcm-hostless.o
 obj-$(CONFIG_SND_SOC_MSM_HOSTLESS_PCM) += snd-soc-hostless-pcm.o
 
