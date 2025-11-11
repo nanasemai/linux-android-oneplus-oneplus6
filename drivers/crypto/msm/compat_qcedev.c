@@ -194,65 +194,7 @@ static int compat_get_qcedev_cipher_op_req(
 	return err;
 }
 
-static int compat_put_qcedev_cipher_op_req(
-		struct compat_qcedev_cipher_op_req __user *data32,
-		struct qcedev_cipher_op_req __user *data)
-{
-	enum qcedev_cipher_mode_enum mode;
-	enum qcedev_cipher_alg_enum alg;
-	compat_ulong_t byteoffset;
-	enum qcedev_oper_enum op;
-	compat_ulong_t data_len;
-	compat_ulong_t encklen;
-	compat_ulong_t entries;
-	compat_ulong_t ivlen;
-	uint8_t in_place_op;
-	int err = 0, i = 0;
-	uint8_t use_pmem;
-	uint8_t enckey;
-	uint8_t iv;
 
-	err |= get_user(use_pmem, &data->use_pmem);
-	err |= put_user(use_pmem, &data32->use_pmem);
-
-	if (use_pmem)
-		err |= compat_put_qcedev_pmem_info(&data32->pmem, &data->pmem);
-	else
-		err |= compat_put_qcedev_vbuf_info(&data32->vbuf, &data->vbuf);
-
-	err |= get_user(entries, &data->entries);
-	err |= put_user(entries, &data32->entries);
-	err |= get_user(data_len, &data->data_len);
-	err |= put_user(data_len, &data32->data_len);
-	err |= get_user(in_place_op, &data->in_place_op);
-	err |= put_user(in_place_op, &data32->in_place_op);
-
-	for (i = 0; i < QCEDEV_MAX_KEY_SIZE; i++) {
-		err |= get_user(enckey, &(data->enckey[i]));
-		err |= put_user(enckey, &(data32->enckey[i]));
-	}
-
-	err |= get_user(encklen, &data->encklen);
-	err |= put_user(encklen, &data32->encklen);
-
-	for (i = 0; i < QCEDEV_MAX_IV_SIZE; i++) {
-		err |= get_user(iv, &(data->iv[i]));
-		err |= put_user(iv, &(data32->iv[i]));
-	}
-
-	err |= get_user(ivlen, &data->ivlen);
-	err |= put_user(ivlen, &data32->ivlen);
-	err |= get_user(byteoffset, &data->byteoffset);
-	err |= put_user(byteoffset, &data32->byteoffset);
-	err |= get_user(alg, &data->alg);
-	err |= put_user(alg, &data32->alg);
-	err |= get_user(mode, &data->mode);
-	err |= put_user(mode, &data32->mode);
-	err |= get_user(op, &data->op);
-	err |= put_user(op, &data32->op);
-
-	return err;
-}
 
 static int compat_xfer_qcedev_map_buf_req(
 			struct compat_qcedev_map_buf_req __user *data32,
@@ -367,49 +309,7 @@ static int compat_get_qcedev_sha_op_req(
 	return err;
 }
 
-static int compat_put_qcedev_sha_op_req(
-		struct compat_qcedev_sha_op_req __user *data32,
-		struct qcedev_sha_op_req __user *data)
-{
-	enum qcedev_sha_alg_enum alg;
-	compat_ulong_t authklen;
-	compat_ulong_t data_len;
-	compat_ulong_t entries;
-	compat_ulong_t diglen;
-	compat_uptr_t authkey;
-	compat_uptr_t vaddr;
-	int err = 0, i = 0;
-	uint8_t digest;
-	uint32_t len;
 
-	for (i = 0; i < QCEDEV_MAX_BUFFERS; i++) {
-		err |= get_user(vaddr, (compat_uptr_t *)&data->data[i].vaddr);
-		err |= put_user(vaddr, &data32->data[i].vaddr);
-		err |= get_user(len, &data->data[i].len);
-		err |= put_user(len, &data32->data[i].len);
-	}
-
-	err |= get_user(entries, &data->entries);
-	err |= put_user(entries, &data32->entries);
-	err |= get_user(data_len, &data->data_len);
-	err |= put_user(data_len, &data32->data_len);
-
-	for (i = 0; i < QCEDEV_MAX_SHA_DIGEST; i++) {
-		err |= get_user(digest, &(data->digest[i]));
-		err |= put_user(digest, &(data32->digest[i]));
-	}
-
-	err |= get_user(diglen, &data->diglen);
-	err |= put_user(diglen, &data32->diglen);
-	err |= get_user(authkey, (compat_uptr_t *)&data->authkey);
-	err |= put_user(authkey, &data32->authkey);
-	err |= get_user(authklen, &data->authklen);
-	err |= put_user(authklen, &data32->authklen);
-	err |= get_user(alg, &data->alg);
-	err |= put_user(alg, &data32->alg);
-
-	return err;
-}
 
 static unsigned int convert_cmd(unsigned int cmd)
 {
@@ -438,89 +338,99 @@ static unsigned int convert_cmd(unsigned int cmd)
 
 }
 
+static long compat_qcedev_handle_cipher_req(struct file *file,
+		unsigned int cmd, unsigned long arg)
+{
+	struct compat_qcedev_cipher_op_req __user *data32;
+	struct qcedev_cipher_op_req __user *data;
+	int err;
+
+	data32 = compat_ptr(arg);
+	data = compat_alloc_user_space(sizeof(*data));
+	if (!data)
+		return -EFAULT;
+
+	err = compat_get_qcedev_cipher_op_req(data32, data);
+	if (err)
+		return err;
+
+	return qcedev_ioctl(file, convert_cmd(cmd), (unsigned long)data);
+}
+
+static long compat_qcedev_handle_sha_req(struct file *file,
+		unsigned int cmd, unsigned long arg)
+{
+	struct compat_qcedev_sha_op_req __user *data32;
+	struct qcedev_sha_op_req __user *data;
+	int err;
+
+	data32 = compat_ptr(arg);
+	data = compat_alloc_user_space(sizeof(*data));
+	if (!data)
+		return -EFAULT;
+
+	err = compat_get_qcedev_sha_op_req(data32, data);
+	if (err)
+		return err;
+
+	return qcedev_ioctl(file, convert_cmd(cmd), (unsigned long)data);
+}
+
+static long compat_qcedev_handle_map_buf_req(struct file *file,
+		unsigned int cmd, unsigned long arg)
+{
+	struct compat_qcedev_map_buf_req __user *data32;
+	struct qcedev_map_buf_req __user *data;
+	int err;
+
+	data32 = compat_ptr(arg);
+	data = compat_alloc_user_space(sizeof(*data));
+	if (!data)
+		return -EINVAL;
+
+	err = compat_xfer_qcedev_map_buf_req(data32, data, true);
+	if (err)
+		return err;
+
+	return qcedev_ioctl(file, convert_cmd(cmd), (unsigned long)data);
+}
+
+static long compat_qcedev_handle_unmap_buf_req(struct file *file,
+		unsigned int cmd, unsigned long arg)
+{
+	struct compat_qcedev_unmap_buf_req __user *data32;
+	struct qcedev_unmap_buf_req __user *data;
+	int err;
+
+	data32 = compat_ptr(arg);
+	data = compat_alloc_user_space(sizeof(*data));
+	if (!data)
+		return -EINVAL;
+
+	err = compat_xfer_qcedev_unmap_buf_req(data32, data, true);
+	if (err)
+		return err;
+
+	return qcedev_ioctl(file, convert_cmd(cmd), (unsigned long)data);
+}
+
 long compat_qcedev_ioctl(struct file *file,
 		unsigned int cmd, unsigned long arg)
 {
-	long ret;
-
 	switch (cmd) {
 	case COMPAT_QCEDEV_IOCTL_ENC_REQ:
-	case COMPAT_QCEDEV_IOCTL_DEC_REQ: {
-		struct compat_qcedev_cipher_op_req __user *data32;
-		struct qcedev_cipher_op_req __user *data;
-		int err;
-
-		data32 = compat_ptr(arg);
-		data = compat_alloc_user_space(sizeof(*data));
-		if (!data)
-			return -EFAULT;
-
-		err = compat_get_qcedev_cipher_op_req(data32, data);
-		if (err)
-			return err;
-
-		ret = qcedev_ioctl(file, convert_cmd(cmd), (unsigned long)data);
-		err = compat_put_qcedev_cipher_op_req(data32, data);
-		return ret ? ret : err;
-	}
+	case COMPAT_QCEDEV_IOCTL_DEC_REQ:
+		return compat_qcedev_handle_cipher_req(file, cmd, arg);
 	case COMPAT_QCEDEV_IOCTL_SHA_INIT_REQ:
 	case COMPAT_QCEDEV_IOCTL_SHA_UPDATE_REQ:
 	case COMPAT_QCEDEV_IOCTL_SHA_FINAL_REQ:
 	case COMPAT_QCEDEV_IOCTL_GET_CMAC_REQ:
-	case COMPAT_QCEDEV_IOCTL_GET_SHA_REQ: {
-		struct compat_qcedev_sha_op_req __user *data32;
-		struct qcedev_sha_op_req __user *data;
-		int err;
-
-		data32 = compat_ptr(arg);
-		data = compat_alloc_user_space(sizeof(*data));
-		if (!data)
-			return -EFAULT;
-
-		err = compat_get_qcedev_sha_op_req(data32, data);
-		if (err)
-			return err;
-
-		ret = qcedev_ioctl(file, convert_cmd(cmd), (unsigned long)data);
-		err = compat_put_qcedev_sha_op_req(data32, data);
-		return ret ? ret : err;
-	}
-	case COMPAT_QCEDEV_IOCTL_MAP_BUF_REQ: {
-		struct compat_qcedev_map_buf_req __user *data32;
-		struct qcedev_map_buf_req __user *data;
-		int err;
-
-		data32 = compat_ptr(arg);
-		data = compat_alloc_user_space(sizeof(*data));
-		if (!data)
-			return -EINVAL;
-
-		err = compat_xfer_qcedev_map_buf_req(data32, data, true);
-		if (err)
-			return err;
-
-		ret = qcedev_ioctl(file, convert_cmd(cmd), (unsigned long)data);
-		err = compat_xfer_qcedev_map_buf_req(data32, data, false);
-		return ret ? ret : err;
-	}
-	case COMPAT_QCEDEV_IOCTL_UNMAP_BUF_REQ: {
-		struct compat_qcedev_unmap_buf_req __user *data32;
-		struct qcedev_unmap_buf_req __user *data;
-		int err;
-
-		data32 = compat_ptr(arg);
-		data = compat_alloc_user_space(sizeof(*data));
-		if (!data)
-			return -EINVAL;
-
-		err = compat_xfer_qcedev_unmap_buf_req(data32, data, true);
-		if (err)
-			return err;
-
-		ret = qcedev_ioctl(file, convert_cmd(cmd), (unsigned long)data);
-		err = compat_xfer_qcedev_unmap_buf_req(data32, data, false);
-		return ret ? ret : err;
-	}
+	case COMPAT_QCEDEV_IOCTL_GET_SHA_REQ:
+		return compat_qcedev_handle_sha_req(file, cmd, arg);
+	case COMPAT_QCEDEV_IOCTL_MAP_BUF_REQ:
+		return compat_qcedev_handle_map_buf_req(file, cmd, arg);
+	case COMPAT_QCEDEV_IOCTL_UNMAP_BUF_REQ:
+		return compat_qcedev_handle_unmap_buf_req(file, cmd, arg);
 	default:
 		return -ENOIOCTLCMD;
 	}
