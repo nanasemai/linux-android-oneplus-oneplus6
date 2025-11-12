@@ -266,8 +266,9 @@ static ssize_t restart_level_store(struct device *dev,
 	int i, orig_count = count;
 
 	p = memchr(buf, '\n', count);
-	if (p)
+	if (p) {
 		count = p - buf;
+	}
 
 	for (i = 0; i < ARRAY_SIZE(restart_levels); i++)
 		if (!strncasecmp(buf, restart_levels[i], count)) {
@@ -292,8 +293,9 @@ static ssize_t firmware_name_store(struct device *dev,
 	int orig_count = count;
 
 	p = memchr(buf, '\n', count);
-	if (p)
+	if (p) {
 		count = p - buf;
+	}
 
 	pr_info("Changing subsys fw_name to %s\n", buf);
 	mutex_lock(&track->lock);
@@ -324,8 +326,9 @@ static ssize_t system_debug_store(struct device *dev,
 	int orig_count = count;
 
 	p = memchr(buf, '\n', count);
-	if (p)
+	if (p) {
 		count = p - buf;
+	}
 
 	if (!strncasecmp(buf, "set", count))
 		subsys->desc->system_debug = true;
@@ -450,12 +453,14 @@ static void do_epoch_check(struct subsys_device *dev)
 	max_history_time_check = max_history_time;
 
 	/* Check if epoch checking is enabled */
-	if (!max_restarts_check)
+	if (!max_restarts_check) {
 		goto out;
+	}
 
 	r_log = kmalloc(sizeof(struct restart_log), GFP_KERNEL);
-	if (!r_log)
+	if (!r_log) {
 		goto out;
+	}
 	r_log->dev = dev;
 	do_gettimeofday(&r_log->time);
 	curr_time = &r_log->time;
@@ -484,9 +489,10 @@ static void do_epoch_check(struct subsys_device *dev)
 
 	if (time_first && n >= max_restarts_check) {
 		if ((curr_time->tv_sec - time_first->tv_sec) <
-				max_history_time_check)
+				max_history_time_check) {
 			panic("Subsystems have crashed %d times in less than %ld seconds!",
 				max_restarts_check, max_history_time_check);
+		}
 	}
 
 out:

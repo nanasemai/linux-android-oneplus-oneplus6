@@ -122,8 +122,9 @@ int msm_spm_set_vdd(unsigned int cpu, unsigned int vlevel)
 	struct msm_spm_device *dev = per_cpu(cpu_vctl_device, cpu);
 	int ret;
 
-	if (!dev)
+	if (!dev) {
 		return -EPROBE_DEFER;
+	}
 
 	ret = IS_ERR(dev);
 	if (ret)
@@ -196,8 +197,9 @@ static void msm_spm_config_hw_flush(struct msm_spm_device *dev,
 {
 	uint32_t val = 0;
 
-	if (!dev->flush_base_addr)
+	if (!dev->flush_base_addr) {
 		return;
+	}
 
 	switch (mode) {
 	case MSM_SPM_MODE_FASTPC:
@@ -217,8 +219,9 @@ static void msm_spm_config_slpreq(struct msm_spm_device *dev,
 {
 	uint32_t val = 0;
 
-	if (!dev->slpreq_base_addr)
+	if (!dev->slpreq_base_addr) {
 		return;
+	}
 
 	switch (mode) {
 	case MSM_SPM_MODE_FASTPC:
@@ -415,8 +418,9 @@ int msm_spm_is_avs_enabled(unsigned int cpu)
 {
 	struct msm_spm_device *dev = per_cpu(cpu_vctl_device, cpu);
 
-	if (!dev)
+	if (!dev) {
 		return -ENXIO;
+	}
 
 	return msm_spm_drv_get_avs_enable(&dev->reg_data);
 }
@@ -433,8 +437,9 @@ int msm_spm_avs_enable(unsigned int cpu)
 {
 	struct msm_spm_device *dev = per_cpu(cpu_vctl_device, cpu);
 
-	if (!dev)
+	if (!dev) {
 		return -ENXIO;
+	}
 
 	return msm_spm_drv_set_avs_enable(&dev->reg_data, true);
 }
@@ -451,8 +456,9 @@ int msm_spm_avs_disable(unsigned int cpu)
 {
 	struct msm_spm_device *dev = per_cpu(cpu_vctl_device, cpu);
 
-	if (!dev)
+	if (!dev) {
 		return -ENXIO;
+	}
 
 	return msm_spm_drv_set_avs_enable(&dev->reg_data, false);
 }

@@ -74,8 +74,9 @@ static struct sysmon_subsys *_find_subsys(struct subsys_desc *desc)
 {
 	struct sysmon_subsys *ss;
 
-	if (desc == NULL)
+	if (desc == NULL) {
 		return NULL;
+	}
 
 	mutex_lock(&sysmon_glink_list_lock);
 	list_for_each_entry(ss, &sysmon_glink_list, list) {
@@ -160,8 +161,9 @@ int sysmon_send_event_no_qmi(struct subsys_desc *dest_desc,
 	struct sysmon_subsys *ss = NULL;
 
 	ss = _find_subsys(dest_desc);
-	if (ss == NULL)
+	if (ss == NULL) {
 		return -EINVAL;
+	}
 
 	if (event_desc == NULL || notif < 0 || notif >= SUBSYS_NOTIF_TYPE_COUNT
 			|| notif_name[notif] == NULL)
@@ -209,8 +211,9 @@ int sysmon_send_shutdown_no_qmi(struct subsys_desc *dest_desc)
 	int ret;
 
 	ss = _find_subsys(dest_desc);
-	if (ss == NULL)
+	if (ss == NULL) {
 		return -EINVAL;
+	}
 
 	mutex_lock(&ss->lock);
 	ret = sysmon_send_msg(ss, tx_buf, sizeof(tx_buf));

@@ -100,9 +100,11 @@ static void sysmon_ind_cb(struct qmi_handle *handle, unsigned int msg_id,
 	struct sysmon_qmi_data *data = NULL, *temp;
 
 	mutex_lock(&sysmon_list_lock);
-	list_for_each_entry(temp, &sysmon_list, list)
-		if (!strcmp(temp->name, (char *)ind_cb_priv))
+	list_for_each_entry(temp, &sysmon_list, list) {
+		if (!strcmp(temp->name, (char *)ind_cb_priv)) {
 			data = temp;
+		}
+	}
 	mutex_unlock(&sysmon_list_lock);
 
 	if (!data) {
@@ -325,9 +327,11 @@ int sysmon_send_event(struct subsys_desc *dest_desc,
 		return -EINVAL;
 
 	mutex_lock(&sysmon_list_lock);
-	list_for_each_entry(temp, &sysmon_list, list)
-		if (!strcmp(temp->name, dest_desc->name))
+	list_for_each_entry(temp, &sysmon_list, list) {
+		if (!strcmp(temp->name, dest_desc->name)) {
 			data = temp;
+		}
+	}
 	mutex_unlock(&sysmon_list_lock);
 
 	if (!data)
