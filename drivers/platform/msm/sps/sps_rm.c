@@ -111,11 +111,11 @@ static int sps_rm_map_match(const struct sps_connect *cfg,
 			return false;
 
 		if (cfg->desc.phys_base != (SPSRM_CLEAR|SPSRM_ADDR_CLR) &&
-		    cfg->desc.base != (void *)(SPSRM_CLEAR|SPSRM_ADDR_CLR) &&
-		    (cfg->desc.phys_base != map->desc.phys_base ||
-		     cfg->desc.base != map->desc.base)) {
-			return false;
-		}
+	    cfg->desc.base != (void *)(SPSRM_CLEAR|SPSRM_ADDR_CLR) &&
+	    (cfg->desc.phys_base != map->desc.phys_base ||
+	     cfg->desc.base != map->desc.base)) {
+		return false;
+	}
 	}
 
 	if (cfg->data.size != SPSRM_CLEAR) {
@@ -123,10 +123,11 @@ static int sps_rm_map_match(const struct sps_connect *cfg,
 			return false;
 
 		if (cfg->data.phys_base != (SPSRM_CLEAR|SPSRM_ADDR_CLR) &&
-		    cfg->data.base != (void *)(SPSRM_CLEAR|SPSRM_ADDR_CLR) &&
-		    (cfg->data.phys_base != map->data.phys_base ||
-		     cfg->data.base != map->data.base))
-			return false;
+	    cfg->data.base != (void *)(SPSRM_CLEAR|SPSRM_ADDR_CLR) &&
+	    (cfg->data.phys_base != map->data.phys_base ||
+	     cfg->data.base != map->data.base)) {
+		return false;
+	}
 	}
 
 	return true;

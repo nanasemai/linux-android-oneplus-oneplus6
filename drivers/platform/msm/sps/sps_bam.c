@@ -354,10 +354,11 @@ int sps_bam_enable(struct sps_bam *dev)
 				  irq_mask,
 				  &dev->version, &num_pipes,
 				  dev->props.options);
-	else
+	else {
 		/* No, so just verify that it is enabled */
 		rc = bam_check(&dev->base, &dev->version,
 				dev->props.ee, &num_pipes);
+	}
 
 	if (rc) {
 		SPS_ERR(dev, "sps:Fail to init BAM %pa IRQ %d\n",
@@ -515,11 +516,12 @@ int sps_bam_enable(struct sps_bam *dev)
 			"sps:BAM %pa (va:0x%pK) enabled: ver:0x%x, number of pipes:%d\n",
 			BAM_ID(dev), dev->base, dev->version,
 			dev->props.num_pipes);
-	} else
+	} else {
 		SPS_DBG3(dev,
 			"sps:BAM %pa (va:0x%pK) enabled: ver:0x%x, number of pipes:%d\n",
 			BAM_ID(dev), dev->base, dev->version,
 			dev->props.num_pipes);
+	}
 
 	return 0;
 }
