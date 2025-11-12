@@ -90,12 +90,14 @@ int msm_spm_probe_done(void)
 
 	for_each_possible_cpu(cpu) {
 		dev = per_cpu(cpu_vctl_device, cpu);
-		if (!dev)
+		if (!dev) {
 			return -EPROBE_DEFER;
+		}
 
 		ret = IS_ERR(dev);
-		if (ret)
+		if (ret) {
 			return ret;
+		}
 	}
 
 	return 0;

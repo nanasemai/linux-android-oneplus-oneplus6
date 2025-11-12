@@ -95,11 +95,13 @@ static int sysmon_send_msg(struct sysmon_subsys *ss, const char *tx_buf,
 	int ret;
 	void *handle;
 
-	if (!ss->chan_open)
+	if (!ss->chan_open) {
 		return -ENODEV;
+	}
 
-	if (!ss->handle)
+	if (!ss->handle) {
 		return -EINVAL;
+	}
 
 	init_completion(&ss->resp_ready);
 	handle = ss->handle;

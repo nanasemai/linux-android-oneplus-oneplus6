@@ -86,8 +86,9 @@ int tracer_pkt_init(void *data, size_t data_len,
 {
 	struct tracer_pkt_hdr *pkt_hdr;
 
-	if (!data || !data_len)
+	if (!data || !data_len) {
 		return -EINVAL;
+	}
 
 	if (!IS_ALIGNED(data_len, sizeof(uint32_t)))
 		return -EINVAL;
@@ -133,8 +134,9 @@ int tracer_pkt_set_event_cfg(void *data, uint16_t client_event_cfg,
 {
 	struct tracer_pkt_hdr *pkt_hdr;
 
-	if (!data)
+	if (!data) {
 		return -EINVAL;
+	}
 
 	pkt_hdr = (struct tracer_pkt_hdr *)data;
 	if (unlikely(pkt_hdr->version != TRACER_PKT_VERSION))
@@ -162,8 +164,9 @@ int tracer_pkt_log_event(void *data, uint32_t event_id)
 	struct tracer_pkt_hdr *pkt_hdr;
 	struct tracer_pkt_event event;
 
-	if (!data)
+	if (!data) {
 		return -EINVAL;
+	}
 
 	pkt_hdr = (struct tracer_pkt_hdr *)data;
 	if (unlikely(pkt_hdr->version != TRACER_PKT_VERSION))
@@ -203,8 +206,9 @@ size_t tracer_pkt_calc_hex_dump_size(void *data, size_t data_len)
 	size_t hex_dump_size;
 	struct tracer_pkt_hdr *pkt_hdr;
 
-	if (!data || data_len <= 0)
+	if (!data || data_len <= 0) {
 		return -EINVAL;
+	}
 
 	pkt_hdr = (struct tracer_pkt_hdr *)data;
 	if (unlikely(pkt_hdr->version != TRACER_PKT_VERSION))
@@ -239,8 +243,9 @@ int tracer_pkt_hex_dump(void *buf, size_t buf_len, void *data, size_t data_len)
 	int i, j = 0;
 	char *dst = (char *)buf;
 
-	if (!buf || buf_len <= 0 || !data || data_len <= 0)
+	if (!buf || buf_len <= 0 || !data || data_len <= 0) {
 		return -EINVAL;
+	}
 
 	if (buf_len < tracer_pkt_calc_hex_dump_size(data, data_len))
 		return -EINVAL;

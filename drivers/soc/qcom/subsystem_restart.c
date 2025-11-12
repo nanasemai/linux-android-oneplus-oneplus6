@@ -223,10 +223,11 @@ static struct subsys_tracking *subsys_get_track(struct subsys_device *subsys)
 {
 	struct subsys_soc_restart_order *order = subsys->restart_order;
 
-	if (order)
+	if (order) {
 		return &order->track;
-	else
+	} else {
 		return &subsys->track;
+	}
 }
 
 static ssize_t name_show(struct device *dev, struct device_attribute *attr,

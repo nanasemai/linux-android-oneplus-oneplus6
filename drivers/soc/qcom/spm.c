@@ -123,9 +123,10 @@ static DEFINE_PER_CPU(idle_fn*, qcom_idle_ops);
 static inline void spm_register_write(struct spm_driver_data *drv,
 					enum spm_reg reg, u32 val)
 {
-	if (drv->reg_data->reg_offset[reg])
+	if (drv->reg_data->reg_offset[reg]) {
 		writel_relaxed(val, drv->reg_base +
 				drv->reg_data->reg_offset[reg]);
+	}
 }
 
 /* Ensure a guaranteed write, before return */
@@ -134,8 +135,9 @@ static inline void spm_register_write_sync(struct spm_driver_data *drv,
 {
 	u32 ret;
 
-	if (!drv->reg_data->reg_offset[reg])
+	if (!drv->reg_data->reg_offset[reg]) {
 		return;
+	}
 
 	do {
 		writel_relaxed(val, drv->reg_base +

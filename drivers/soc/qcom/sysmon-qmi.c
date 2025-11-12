@@ -105,8 +105,9 @@ static void sysmon_ind_cb(struct qmi_handle *handle, unsigned int msg_id,
 			data = temp;
 	mutex_unlock(&sysmon_list_lock);
 
-	if (!data)
+	if (!data) {
 		return;
+	}
 
 	pr_debug("%s: Indication received from subsystem\n", data->name);
 	complete(&data->ind_recv);
@@ -204,8 +205,9 @@ static void sysmon_clnt_recv_msg(struct work_struct *work)
 		pr_debug("%s: Notified about a Receive event\n", data->name);
 	} while ((ret = qmi_recv_msg(data->clnt_handle)) == 0);
 
-	if (ret != -ENOMSG)
+	if (ret != -ENOMSG) {
 		pr_err("%s: Error receiving message\n", data->name);
+	}
 }
 
 struct qmi_ssctl_subsys_event_req_msg {

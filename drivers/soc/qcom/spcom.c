@@ -317,14 +317,16 @@ static int spcom_create_predefined_channels_chardev(void)
 	int ret;
 	static bool is_predefined_created;
 
-	if (is_predefined_created)
+	if (is_predefined_created) {
 		return 0;
+	}
 
 	for (i = 0; i < SPCOM_MAX_CHANNELS; i++) {
 		const char *name = spcom_dev->predefined_ch_name[i];
 
-		if (name[0] == 0)
+		if (name[0] == 0) {
 			break;
+		}
 		ret = spcom_create_channel_chardev(name);
 		if (ret) {
 			pr_err("failed to create chardev [%s], ret [%d].\n",

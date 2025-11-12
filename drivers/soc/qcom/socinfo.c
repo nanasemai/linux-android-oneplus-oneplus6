@@ -687,12 +687,15 @@ static char *msm_read_hardware_id(void)
 	static bool string_generated;
 	int ret = 0;
 
-	if (string_generated)
+	if (string_generated) {
 		return msm_soc_str;
-	if (!socinfo)
+	}
+	if (!socinfo) {
 		goto err_path;
-	if (!cpu_of_id[socinfo->v0_1.id].soc_id_string)
+	}
+	if (!cpu_of_id[socinfo->v0_1.id].soc_id_string) {
 		goto err_path;
+	}
 
 	ret = strlcat(msm_soc_str, cpu_of_id[socinfo->v0_1.id].soc_id_string,
 			sizeof(msm_soc_str));
