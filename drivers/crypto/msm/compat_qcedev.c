@@ -53,7 +53,7 @@ static int compat_get_qcedev_pmem_info(
 	return err;
 }
 
-static int compat_put_qcedev_pmem_info(
+static int __maybe_unused compat_put_qcedev_pmem_info(
 		struct compat_qcedev_pmem_info __user *pmem32,
 		struct qcedev_pmem_info __user *pmem)
 {
@@ -110,7 +110,7 @@ static int compat_get_qcedev_vbuf_info(
 	return err;
 }
 
-static int compat_put_qcedev_vbuf_info(
+static int __maybe_unused compat_put_qcedev_vbuf_info(
 		struct compat_qcedev_vbuf_info __user *vbuf32,
 		struct qcedev_vbuf_info __user *vbuf)
 {
