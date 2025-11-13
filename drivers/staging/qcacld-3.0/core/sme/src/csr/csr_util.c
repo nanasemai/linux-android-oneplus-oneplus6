@@ -1213,13 +1213,14 @@ bool csr_is_valid_mc_concurrent_session(tpAniSirGlobal mac_ctx,
 }
 
 static tSirMacCapabilityInfo csr_get_bss_capabilities(tSirBssDescription *
-						      pSirBssDesc)
+					      pSirBssDesc)
 {
 	tSirMacCapabilityInfo dot11Caps;
+	uint16_t temp;
 
 	/* tSirMacCapabilityInfo is 16-bit */
-	qdf_get_u16((uint8_t *) &pSirBssDesc->capabilityInfo,
-		    (uint16_t *) &dot11Caps);
+	qdf_get_u16((uint8_t *) &pSirBssDesc->capabilityInfo, &temp);
+	qdf_mem_copy(&dot11Caps, &temp, sizeof(dot11Caps));
 
 	return dot11Caps;
 }
