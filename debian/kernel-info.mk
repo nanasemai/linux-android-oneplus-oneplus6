@@ -161,26 +161,22 @@ FLASH_INFO_DEVICE_IDS = sdm845
 # Whether to cross-build. Use 0 (no) or 1.
 BUILD_CROSS = 1
 
-# (Cross-build only) The build triplet to use. You'll probably want to
-# use aarch64-linux-android- if building Android kernels.
-BUILD_TRIPLET = aarch64-linux-android-
+# (Cross-build only) The build triplet to use. Use standard GNU toolchain
+# for cross-compilation.
+BUILD_TRIPLET = aarch64-linux-gnu-
 
-# (Cross-build only) The build triplet to use with clang. You'll probably
-# want to use aarch64-linux-gnu- here.
+# (Cross-build only) The build triplet to use with clang.
 BUILD_CLANG_TRIPLET = aarch64-linux-gnu-
 
-# The compiler to use. Recent Android kernels are built with clang.
-BUILD_CC = aarch64-linux-android21-clang
+# The compiler to use. Use standard GNU GCC compiler.
+BUILD_CC = aarch64-linux-gnu-gcc
 
-# Extra paths to prepend to the PATH variable. You'll probably want
-# to specify the clang path here (the default).
-BUILD_PATH = /opt/android-ndk-r21e/toolchains/llvm/prebuilt/linux-x86_64/bin
+# Extra paths to prepend to the PATH variable. Use standard system path
+# where cross-compilation tools are typically installed.
+BUILD_PATH = /usr/bin
 
-# Extra packages to add to the Build-Depends section. Mainline builds
-# will need cross-compiler packages. You'll probably want to add
-# binutils-aarch64-linux-gnu, gcc-aarch64-linux-gnu, g++-aarch64-linux-gnu
-# for aarch64 builds (Android NDK工具链已单独安装，此处保留标准工具链)
-# Android NDK工具链已单独安装，此处保留标准工具链
+# Extra packages to add to the Build-Depends section. Standard GNU
+# cross-compilation toolchain packages for aarch64 builds.
 DEB_TOOLCHAIN = binutils-aarch64-linux-gnu, gcc-aarch64-linux-gnu, g++-aarch64-linux-gnu
 
 # Where we're building on
