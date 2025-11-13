@@ -1620,12 +1620,14 @@ static void hdd_print_bss_info(hdd_station_ctx_t *hdd_sta_ctx)
 	hdd_debug("datarate mcs: %d",
 		 hdd_sta_ctx->conn_info.txrate.mcs);
 	if (hdd_sta_ctx->conn_info.conn_flag.ht_present) {
-		cap_info = (uint32_t *)&hdd_sta_ctx->conn_info.ht_caps;
-		hdd_debug("ht caps: %x", *cap_info);
+		uint32_t ht_caps_val;
+		qdf_mem_copy(&ht_caps_val, &hdd_sta_ctx->conn_info.ht_caps, sizeof(ht_caps_val));
+		hdd_debug("ht caps: %x", ht_caps_val);
 	}
 	if (hdd_sta_ctx->conn_info.conn_flag.vht_present) {
-		cap_info = (uint32_t *)&hdd_sta_ctx->conn_info.vht_caps;
-		hdd_debug("vht caps: %x", *cap_info);
+		uint32_t vht_caps_val;
+		qdf_mem_copy(&vht_caps_val, &hdd_sta_ctx->conn_info.vht_caps, sizeof(vht_caps_val));
+		hdd_debug("vht caps: %x", vht_caps_val);
 	}
 	if (hdd_sta_ctx->conn_info.conn_flag.hs20_present)
 		hdd_debug("hs20 info: %x",
