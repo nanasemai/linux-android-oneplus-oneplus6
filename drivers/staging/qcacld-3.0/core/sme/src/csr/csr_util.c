@@ -1220,7 +1220,8 @@ static tSirMacCapabilityInfo csr_get_bss_capabilities(tSirBssDescription *
 
 	/* tSirMacCapabilityInfo is 16-bit */
 	qdf_get_u16((uint8_t *) &pSirBssDesc->capabilityInfo, &temp);
-	qdf_mem_copy(&dot11Caps, &temp, sizeof(dot11Caps));
+	/* Use memcpy to avoid alignment issues with packed structure */
+	qdf_mem_copy(&dot11Caps, &temp, sizeof(temp));
 
 	return dot11Caps;
 }
