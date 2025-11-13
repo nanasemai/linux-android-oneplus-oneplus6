@@ -3554,7 +3554,8 @@ QDF_STATUS wma_roam_scan_fill_self_caps(tp_wma_handle wma_handle,
 		(uint16_t) ((val >> WNI_CFG_BLOCK_ACK_ENABLED_DELAYED) & 1);
 	selfCaps.immediateBA =
 		(uint16_t) ((val >> WNI_CFG_BLOCK_ACK_ENABLED_IMMEDIATE) & 1);
-	pCfgValue16 = (uint16_t *) &selfCaps;
+	/* Use memcpy to avoid alignment issues with packed structure */
+	qdf_mem_copy(&pCfgValue16, &selfCaps, sizeof(selfCaps));
 	/*
 	 * RSN caps arent been sent to firmware, so in case of PMF required,
 	 * the firmware connects to a non PMF AP advertising PMF not required
