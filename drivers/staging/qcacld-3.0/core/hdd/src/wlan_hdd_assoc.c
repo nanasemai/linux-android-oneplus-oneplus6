@@ -1599,8 +1599,6 @@ QDF_STATUS hdd_roam_deregister_sta(hdd_adapter_t *pAdapter, uint8_t staId)
  */
 static void hdd_print_bss_info(hdd_station_ctx_t *hdd_sta_ctx)
 {
-	uint32_t *cap_info;
-
 	hdd_debug("WIFI DATA LOGGER");
 	hdd_debug("channel: %d",
 		 hdd_sta_ctx->conn_info.freq);
