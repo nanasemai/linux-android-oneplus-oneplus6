@@ -1,0 +1,33 @@
+Source: linux-kernel-oneplus-oneplus6
+Section: kernel
+Priority: optional
+Maintainer: Droidian Build System <build@droidian.org>
+Build-Depends: debhelper-compat (= 13),
+               binutils-aarch64-linux-gnu,
+               gcc-aarch64-linux-gnu,
+               g++-aarch64-linux-gnu,
+               bc,
+               kmod,
+               cpio,
+               flex,
+               bison,
+               libssl-dev,
+               libelf-dev
+Standards-Version: 4.6.0
+Homepage: https://github.com/droidian/linux-android-oneplus-oneplus6
+
+Package: linux-image-oneplus-oneplus6
+Architecture: arm64
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Linux kernel for OnePlus 6/6T
+ This package contains the Linux kernel for OnePlus 6/6T devices.
+ .
+ This kernel is specifically built for Droidian on OnePlus 6/6T.
+
+Package: linux-bootimage-oneplus-oneplus6
+Architecture: arm64
+Depends: ${misc:Depends}, linux-image-oneplus-oneplus6 (= ${binary:Version})
+Description: Boot image for OnePlus 6/6T
+ This package contains the boot image for OnePlus 6/6T devices.
+ .
+ This includes the kernel image and device tree blobs.

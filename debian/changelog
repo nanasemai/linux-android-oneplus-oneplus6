@@ -1,0 +1,7 @@
+linux-kernel-oneplus-oneplus6 (4.9-113-1) unstable; urgency=medium
+
+  * Initial release for OnePlus 6/6T
+  * Built with enchilada_defconfig
+  * Includes support for Droidian on OnePlus 6/6T
+
+ -- Droidian Build System <build@droidian.org>  Mon, 01 Jan 2024 12:00:00 +0000

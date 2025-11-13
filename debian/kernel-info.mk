@@ -43,12 +43,12 @@ KERNEL_CONFIG_USE_DIFFCONFIG = 0
 KERNEL_DEFCONFIG = enchilada_defconfig
 
 # Whether to include DTBs with the image. Use 0 (no) or 1.
-KERNEL_IMAGE_WITH_DTB = 0
+KERNEL_IMAGE_WITH_DTB = 1
 
 # Path to the DTB
 # If you leave this undefined, an attempt to find it automatically
 # will be made.
-#KERNEL_IMAGE_DTB = arch/arm64/boot/dts/qcom/my_dtb.dtb
+KERNEL_IMAGE_DTB = arch/arm64/boot/dts/qcom/sdm845-v2.1.dtb
 
 # Whether to include a DTB Overlay. Use 0 (no) or 1.
 KERNEL_IMAGE_WITH_DTB_OVERLAY = 0
@@ -170,16 +170,18 @@ BUILD_TRIPLET = aarch64-linux-android-
 BUILD_CLANG_TRIPLET = aarch64-linux-gnu-
 
 # The compiler to use. Recent Android kernels are built with clang.
-BUILD_CC = aarch64-linux-android-gcc-4.9
+BUILD_CC = aarch64-linux-android21-clang
 
 # Extra paths to prepend to the PATH variable. You'll probably want
 # to specify the clang path here (the default).
-BUILD_PATH = /usr/lib/llvm-android-6.0-4691093
+BUILD_PATH = /opt/android-ndk-r21e/toolchains/llvm/prebuilt/linux-x86_64/bin
 
 # Extra packages to add to the Build-Depends section. Mainline builds
-# can have this section empty, unless cross-building.
-# The default is enough to install the Android toolchain, including clang.
-DEB_TOOLCHAIN = linux-initramfs-halium-generic:arm64, binutils-aarch64-linux-gnu, gcc-4.9-aarch64-linux-android, g++-4.9-aarch64-linux-android, libgcc-4.9-dev-aarch64-linux-android-cross
+# will need cross-compiler packages. You'll probably want to add
+# binutils-aarch64-linux-gnu, gcc-aarch64-linux-gnu, g++-aarch64-linux-gnu
+# for aarch64 builds (Android NDK工具链已单独安装，此处保留标准工具链)
+# Android NDK工具链已单独安装，此处保留标准工具链
+DEB_TOOLCHAIN = binutils-aarch64-linux-gnu, gcc-aarch64-linux-gnu, g++-aarch64-linux-gnu
 
 # Where we're building on
 DEB_BUILD_ON = amd64

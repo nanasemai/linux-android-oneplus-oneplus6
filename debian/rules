@@ -1,6 +1,63 @@
 #!/usr/bin/make -f
 
-include /usr/share/linux-packaging-snippets/kernel-snippet.mk
+# Include kernel configuration
+include debian/kernel-info.mk
 
+# Build architecture
+DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+DEB_BUILD_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+
+# Cross-compilation settings
+ifeq ($(BUILD_CROSS),1)
+  CROSS_COMPILE := $(BUILD_TRIPLET)
+  ARCH := $(KERNEL_ARCH)
+  export CROSS_COMPILE ARCH
+endif
+
+# Kernel build variables
+KERNEL_SRC := .
+KERNEL_OUT := $(KERNEL_SRC)
+KERNEL_CONFIG := $(KERNEL_DEFCONFIG)
+KERNEL_TARGET := $(KERNEL_BUILD_TARGET)
+
+# Build flags
+BUILD_CC ?= $(BUILD_CC)
+BUILD_PATH ?= $(BUILD_PATH)
+
+# Export build environment
+export PATH := $(BUILD_PATH):$(PATH)
+
+# Standard debhelper rules
 %:
-	dh $@
+	dh $@ --with=kernel
+
+# Override build targets
+override_dh_auto_configure:
+	@echo "Configuring kernel with $(KERNEL_CONFIG)..."
+	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) $(KERNEL_CONFIG)
+
+override_dh_auto_build:
+	@echo "Building kernel..."
+	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) $(KERNEL_TARGET) modules
+
+override_dh_auto_install:
+	@echo "Installing kernel..."
+	# Create installation directories
+	mkdir -p debian/linux-image-oneplus-oneplus6/boot
+	mkdir -p debian/linux-image-oneplus-oneplus6/lib/modules
+	
+	# Install kernel image
+	install -m 644 $(KERNEL_OUT)/arch/arm64/boot/Image.gz-dtb debian/linux-image-oneplus-oneplus6/boot/
+	
+	# Install device tree if enabled
+	if [ "$(KERNEL_IMAGE_WITH_DTB)" = "1" ] && [ -n "$(KERNEL_IMAGE_DTB)" ]; then
+		install -m 644 $(KERNEL_OUT)/$(KERNEL_IMAGE_DTB) debian/linux-image-oneplus-oneplus6/boot/
+	endif
+	
+	# Install modules
+	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) INSTALL_MOD_PATH=debian/linux-image-oneplus-oneplus6 modules_install
+
+# Clean build artifacts
+override_dh_auto_clean:
+	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) distclean
+	dh_auto_clean
