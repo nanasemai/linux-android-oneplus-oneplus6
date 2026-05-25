@@ -40,6 +40,9 @@ Module.symvers
 *.su
 *.c.[012]*.*
 *.dtbo
+built-in.o
+modules.builtin
+modules.order
 
 #
 # Top-level generic files
